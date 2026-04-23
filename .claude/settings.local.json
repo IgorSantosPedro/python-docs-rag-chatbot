@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(.venv/Scripts/python -c ' *)"
+      "Bash(.venv/Scripts/python -c ' *)",
+      "Bash(gh repo *)",
+      "Bash(where gh *)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Bash(bash -c 'cd \"/c/Projetos/Claude/Teste RAG\" && git add . && git diff --cached --quiet || \\(git commit -m \"Auto-update: $\\(date \\\\\"+%Y-%m-%d %H:%M:%S\\\\\"\\)\" && git push origin main\\) 2>/dev/null || true')"
     ]
   }
 }
