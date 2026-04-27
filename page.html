@@ -1174,6 +1174,38 @@
 <script>
   const API = "http://localhost:8000";
 
+  /* ── Server status check ───────────────────────────────────────────────── */
+  const overlay   = document.getElementById("server-overlay");
+  const retryBtn  = document.getElementById("srv-retry");
+  const spinner   = document.getElementById("srv-spinner");
+
+  async function checkServer() {
+    try {
+      const r = await fetch(`${API}/`, { method: "HEAD", signal: AbortSignal.timeout(3000) });
+      return r.ok || r.status < 500;
+    } catch {
+      return false;
+    }
+  }
+
+  async function initServerCheck() {
+    const online = await checkServer();
+    if (online) overlay.classList.add("hidden");
+  }
+
+  retryBtn.addEventListener("click", async () => {
+    spinner.style.display = "inline-block";
+    retryBtn.disabled = true;
+    const online = await checkServer();
+    spinner.style.display = "none";
+    retryBtn.disabled = false;
+    if (online) overlay.classList.add("hidden");
+    else retryBtn.textContent && (retryBtn.innerHTML = '<span class="srv-spinner" style="display:inline-block;margin-right:6px;" id="srv-spinner"></span>Verificar novamente'.replace('<span', '').split('>')[0] + '>') ;
+    retryBtn.innerHTML = '<span id="srv-spinner" class="srv-spinner" style="display:none;"></span>Verificar novamente';
+  });
+
+  initServerCheck();
+
   /* ── FAB toggle ────────────────────────────────────────────────────────── */
   const fab      = document.getElementById("fab-toggle");
   const popup    = document.getElementById("chat-popup");
