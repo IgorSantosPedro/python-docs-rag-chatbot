@@ -189,7 +189,7 @@ def chat(request: ChatRequest):
     sources = retrieve(request.message)
     context = "\n".join(f"- {chunk}" for chunk in sources)
 
-    user_message = f"Contexto da documentação:\n{context}\n\nPergunta: {request.message}"
+    user_message = f"[Trechos relevantes da documentação]\n{context}\n\n{request.message}"
     history.append({"role": "user", "content": user_message})
 
     try:
