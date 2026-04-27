@@ -1085,8 +1085,94 @@
 
 </div>
 
+<style>
+  #server-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(13,17,23,.92);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0;
+  }
+  #server-overlay.hidden { display: none; }
+  .srv-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-2);
+    border-radius: 16px;
+    padding: 40px 48px;
+    max-width: 440px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 24px 64px rgba(0,0,0,.6);
+  }
+  .srv-icon { font-size: 3rem; margin-bottom: 16px; }
+  .srv-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: var(--text-1); }
+  .srv-desc { font-size: 0.85rem; color: var(--text-2); line-height: 1.6; margin-bottom: 28px; }
+  .srv-step {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    font-family: monospace;
+    color: var(--blue-light);
+    margin-bottom: 24px;
+    text-align: left;
+  }
+  .srv-actions { display: flex; gap: 10px; justify-content: center; }
+  .srv-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background .15s;
+  }
+  .srv-btn.primary { background: var(--blue); color: #fff; }
+  .srv-btn.primary:hover { background: #388bfd; }
+  .srv-btn.secondary { background: var(--bg-card); color: var(--text-2); border: 1px solid var(--border-2); }
+  .srv-btn.secondary:hover { color: var(--text-1); border-color: var(--blue-light); }
+  .srv-spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+<!-- Server offline overlay -->
+<div id="server-overlay">
+  <div class="srv-card">
+    <div class="srv-icon">⚡</div>
+    <div class="srv-title">Servidor offline</div>
+    <div class="srv-desc">
+      O chatbot precisa do servidor Python rodando localmente. Execute o arquivo abaixo para iniciá-lo:
+    </div>
+    <div class="srv-step">▶ start.bat</div>
+    <div class="srv-desc" style="margin-bottom:24px;">
+      Após o terminal exibir <strong style="color:var(--green-light)">Servidor pronto!</strong>, clique em <em>Verificar novamente</em>.
+    </div>
+    <div class="srv-actions">
+      <button class="srv-btn primary" id="srv-retry">
+        <span id="srv-spinner" class="srv-spinner" style="display:none;"></span>
+        Verificar novamente
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
-  const API = "";
+  const API = "http://localhost:8000";
 
   /* ── FAB toggle ────────────────────────────────────────────────────────── */
   const fab      = document.getElementById("fab-toggle");
