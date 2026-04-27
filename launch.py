@@ -14,6 +14,7 @@ ROOT    = Path(__file__).parent
 PYTHON  = ROOT / ".venv" / "Scripts" / "python.exe"
 UVICORN = ROOT / ".venv" / "Scripts" / "uvicorn.exe"
 URL     = "http://localhost:8000"
+PAGE    = "http://localhost:8000/page"
 
 print("=" * 50)
 print("  Python Docs Chatbot")
