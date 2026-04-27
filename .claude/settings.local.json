@@ -6,7 +6,10 @@
       "Bash(where gh *)",
       "Skill(update-config)",
       "Skill(update-config:*)",
-      "Bash(bash -c 'cd \"/c/Projetos/Claude/Teste RAG\" && git add . && git diff --cached --quiet || \\(git commit -m \"Auto-update: $\\(date \\\\\"+%Y-%m-%d %H:%M:%S\\\\\"\\)\" && git push origin main\\) 2>/dev/null || true')"
+      "Bash(bash -c 'cd \"/c/Projetos/Claude/Teste RAG\" && git add . && git diff --cached --quiet || \\(git commit -m \"Auto-update: $\\(date \\\\\"+%Y-%m-%d %H:%M:%S\\\\\"\\)\" && git push origin main\\) 2>/dev/null || true')",
+      "Bash(python -c \"import json; d=json.load\\(open\\('/c/Users/igorp/.claude/settings.json'\\)\\); hooks=d['hooks']['PostToolUse']; print\\(f'{len\\(hooks\\)} hook entries'\\); [print\\(f'  - {h[\\\\\"hooks\\\\\"][0][\\\\\"command\\\\\"][:60]}...'\\) for h in hooks]\")",
+      "Bash(python -c ' *)",
+      "Bash(git remote *)"
     ]
   }
 }

@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyDocs — Central de Documentação Python</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-base:    #0d1117;
+      --bg-surface: #161b22;
+      --bg-card:    #1c2128;
+      --border:     #21262d;
+      --border-2:   #30363d;
+      --blue:       #1f6feb;
+      --blue-light: #58a6ff;
+      --green:      #238636;
+      --green-light:#3fb950;
+      --yellow:     #d29922;
+      --text-1:     #e6edf3;
+      --text-2:     #8b949e;
+      --text-3:     #484f58;
+      --radius:     10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg-base);
+      color: var(--text-1);
+      min-height: 100vh;
+    }
+
+    /* ── TOP NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,17,23,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 0 32px;
+      height: 60px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-1);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-logo svg { width: 26px; height: 26px; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+    .nav-links a {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: background .15s, color .15s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--bg-surface);
+      color: var(--text-1);
+    }
+
+    .nav-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-2);
+      border-radius: 8px;
+      padding: 6px 12px;
+      width: 220px;
+      cursor: text;
+    }
+    .nav-search svg { width: 15px; height: 15px; color: var(--text-3); flex-shrink: 0; }
+    .nav-search span { font-size: 0.82rem; color: var(--text-3); }
+    .nav-search kbd {
+      margin-left: auto;
+      font-size: 0.72rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-2);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: var(--text-3);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-size: 0.82rem;
+      padding: 6px 14px;
+      border-radius: 7px;
+      border: 1px solid var(--border-2);
+      background: transparent;
+      color: var(--text-2);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color .15s, color .15s;
+    }
+    .nav-btn:hover { border-color: var(--blue-light); color: var(--text-1); }
+    .nav-btn.primary {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+    }
+    .nav-btn.primary:hover { background: #388bfd; border-color: #388bfd; }
+
+    .avatar-nav {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1f6feb, #238636);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: #fff;
+      cursor: pointer; flex-shrink: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 72px 32px 56px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(31,111,235,.12);
+      border: 1px solid rgba(31,111,235,.3);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      color: var(--blue-light);
+      margin-bottom: 24px;
+    }
+    .hero-badge::before { content: "✦"; }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -.5px;
+      margin-bottom: 18px;
+    }
+    .hero h1 span { color: var(--blue-light); }
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--text-2);
+      line-height: 1.7;
+      max-width: 600px;
+      margin: 0 auto 36px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 9px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: transform .12s, box-shadow .12s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+      box-shadow: 0 0 0 3px rgba(31,111,235,.2);
+    }
+    .btn-primary:hover { background: #388bfd; box-shadow: 0 0 0 4px rgba(31,111,235,.35); }
+    .btn-ghost {
+      background: var(--bg-surface);
+      color: var(--text-1);
+      border: 1px solid var(--border-2);
+    }
+    .btn-ghost:hover { border-color: var(--blue-light); }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.6rem; font-weight: 800; color: var(--text-1); }
+    .stat-label { font-size: 0.78rem; color: var(--text-2); margin-top: 2px; }
+
+    /* ── MAIN LAYOUT ── */
+    .layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: sticky;
+      top: 80px;
+    }
+    .sidebar-section { margin-bottom: 24px; }
+    .sidebar-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-3);
+      margin-bottom: 8px;
+      padding: 0 8px;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 8px;
+      border-radius: 7px;
+      font-size: 0.85rem;
+      color: var(--text-2);
+      text-decoration: none;
+      transition: background .12s, color .12s;
+    }
+    .sidebar-link:hover { background: var(--bg-surface); color: var(--text-1); }
+    .sidebar-link.active { background: rgba(31,111,235,.15); color: var(--blue-light); font-weight: 600; }
+    .sidebar-link svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .sidebar-link .badge {
+      margin-left: auto;
+      font-size: 0.68rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1px 7px;
+      color: var(--text-3);
+    }
+    .sidebar-link .badge.new {
+      background: rgba(35,134,54,.15);
+      border-color: rgba(63,185,80,.3);
+      color: var(--green-light);
+    }
+
+    /* ── CONTENT ── */
+    .content-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .content-header h2 { font-size: 1.3rem; font-weight: 700; }
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+    }
+    .filter-chip {
+      font-size: 0.78rem;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border-2);
+      background: transparent;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all .12s;
+    }
+    .filter-chip.active, .filter-chip:hover {
+      border-color: var(--blue-light);
+      color: var(--blue-light);
+      background: rgba(31,111,235,.08);
+    }
+
+    /* ── DOC CARDS ── */
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .doc-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .15s, transform .12s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .doc-card:hover {
+      border-color: var(--blue-light);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .card-icon.blue   { background: rgba(31,111,235,.15); }
+    .card-icon.green  { background: rgba(35,134,54,.15); }
+    .card-icon.yellow { background: rgba(210,153,34,.15); }
+    .card-icon.purple { background: rgba(130,80,255,.15); }
+
+    .card-body { flex: 1; }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-1);
+    }
+    .card-desc {
+      font-size: 0.8rem;
+      color: var(--text-2);
+      line-height: 1.55;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .tag {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      color: var(--text-3);
+    }
+    .tag.blue   { border-color: rgba(31,111,235,.4);  color: var(--blue-light); }
+    .tag.green  { border-color: rgba(63,185,80,.4);   color: var(--green-light); }
+    .tag.yellow { border-color: rgba(210,153,34,.4);  color: #e3b341; }
+    .card-arrow {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: var(--text-3);
+      transition: color .15s;
+    }
+    .doc-card:hover .card-arrow { color: var(--blue-light); }
+
+    /* ── FEATURED SECTION ── */
+    .section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-3);
+      margin: 32px 0 16px;
+    }
+
+    .featured-card {
+      background: linear-gradient(135deg, rgba(31,111,235,.12), rgba(13,17,23,0) 60%),
+                  var(--bg-surface);
+      border: 1px solid rgba(31,111,235,.25);
+      border-radius: 14px;
+      padding: 28px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    .featured-icon {
+      width: 60px; height: 60px;
+      border-radius: 14px;
+      background: rgba(31,111,235,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+    .featured-body { flex: 1; }
+    .featured-title {
+      font-size: 1.05rem; font-weight: 700; margin-bottom: 6px;
+    }
+    .featured-desc {
+      font-size: 0.85rem; color: var(--text-2); line-height: 1.6;
+    }
+    .featured-tags { display: flex; gap: 6px; margin-top: 12px; }
+
+    /* ── PROGRESS ── */
+    .progress-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .progress-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .progress-title { font-size: 0.9rem; font-weight: 600; }
+    .progress-pct { font-size: 0.85rem; color: var(--blue-light); font-weight: 600; }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--blue-light));
+      border-radius: 4px;
+      transition: width .4s ease;
+    }
+
+    .progress-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--text-2);
+    }
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .step-dot.done { background: var(--green-light); }
+    .step-dot.active { background: var(--blue-light); box-shadow: 0 0 0 3px rgba(88,166,255,.2); }
+    .step-dot.pending { background: var(--border-2); }
+
+    /* ── CHAT WIDGET ── */
+    #chat-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 1000;
+    }
+
+    .fab-btn {
+      width: 58px; height: 58px;
+      border-radius: 50%;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(31,111,235,.5);
+      transition: background .15s, transform .15s, box-shadow .15s;
+      position: relative;
+    }
+    .fab-btn:hover {
+      background: #388bfd;
+      transform: scale(1.08);
+      box-shadow: 0 6px 28px rgba(31,111,235,.65);
+    }
+    .fab-btn svg { width: 24px; height: 24px; }
+
+    .fab-badge {
+      position: absolute;
+      top: -4px; right: -4px;
+      width: 18px; height: 18px;
+      background: #da3633;
+      border-radius: 50%;
+      border: 2px solid var(--bg-base);
+      font-size: 0.65rem;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Chat popup */
+    #chat-popup {
+      position: fixed;
+      bottom: 100px;
+      right: 28px;
+      width: 380px;
+      max-height: 560px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-2);
+      border-radius: 16px;
+      box-shadow: 0 16px 48px rgba(0,0,0,.5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 999;
+      transform: scale(.92) translateY(16px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .2s cubic-bezier(.34,1.56,.64,1), opacity .18s ease;
+      transform-origin: bottom right;
+    }
+    #chat-popup.open {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* Popup header */
+    .popup-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+      flex-shrink: 0;
+    }
+    .popup-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .popup-meta { flex: 1; min-width: 0; }
+    .popup-name { font-size: 0.88rem; font-weight: 600; }
+    .popup-status {
+      font-size: 0.72rem;
+      color: var(--green-light);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .popup-status::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green-light);
+      display: inline-block;
+    }
+    .popup-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .popup-icon-btn {
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--text-2);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .12s, color .12s;
+    }
+    .popup-icon-btn:hover { background: var(--bg-surface); color: var(--text-1); }
+    .popup-icon-btn svg { width: 15px; height: 15px; }
+
+    /* Messages area */
+    #popup-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+    }
+    #popup-messages::-webkit-scrollbar { width: 4px; }
+    #popup-messages::-webkit-scrollbar-track { background: transparent; }
+    #popup-messages::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
+
+    .pm-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .pm-row.user { flex-direction: row-reverse; }
+
+    .pm-avatar {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+    .pm-avatar.bot  { background: var(--blue); color: #fff; font-size: .8rem; }
+    .pm-avatar.user { background: var(--green); color: #fff; }
+
+    .pm-bubble {
+      max-width: 80%;
+      padding: 10px 13px;
+      border-radius: 12px;
+      font-size: 0.83rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .pm-row.bot  .pm-bubble {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 3px;
+    }
+    .pm-row.user .pm-bubble {
+      background: var(--blue);
+      border-bottom-right-radius: 3px;
+    }
+
+    /* Quick suggestions */
+    .suggestions {
+      padding: 0 16px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .suggest-chip {
+      font-size: 0.75rem;
+      padding: 5px 11px;
+      border-radius: 20px;
+      border: 1px solid var(--border-2);
+      background: var(--bg-card);
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all .12s;
+    }
+    .suggest-chip:hover {
+      border-color: var(--blue-light);
+      color: var(--blue-light);
+      background: rgba(31,111,235,.08);
+    }
+
+    /* Popup input */
+    .popup-input-bar {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      padding: 12px 14px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-card);
+      flex-shrink: 0;
+    }
+    textarea#popup-input {
+      flex: 1;
+      resize: none;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-2);
+      border-radius: 8px;
+      color: var(--text-1);
+      font-size: 0.82rem;
+      line-height: 1.5;
+      padding: 8px 11px;
+      min-height: 36px;
+      max-height: 100px;
+      overflow-y: auto;
+      outline: none;
+      font-family: inherit;
+      transition: border-color .15s;
+    }
+    textarea#popup-input:focus { border-color: var(--blue-light); }
+    textarea#popup-input::placeholder { color: var(--text-3); }
+
+    button#popup-send {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background .15s;
+    }
+    button#popup-send:hover:not(:disabled) { background: #388bfd; }
+    button#popup-send:disabled { background: var(--border-2); cursor: not-allowed; }
+    button#popup-send svg { width: 15px; height: 15px; }
+
+    /* Typing dots */
+    .typing-bubble {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 12px 14px;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      animation: bounce 1.2s infinite;
+    }
+    .dot:nth-child(2) { animation-delay: .2s; }
+    .dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce {
+      0%,80%,100% { transform: translateY(0); opacity: .4; }
+      40%          { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* ── UTILITY ── */
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; display: none; }
+      nav { gap: 16px; padding: 0 16px; }
+      .nav-search { display: none; }
+      .hero { padding: 48px 20px 40px; }
+      #chat-popup { width: calc(100vw - 32px); right: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── TOP NAV ────────────────────────────────────────────────────────────── -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11.9 2C9.18 2 7 3.74 7 5.9V8h5v1H4.6C2.6 9 1 10.79 1 13s1.6 4 3.6 4H6v-2.1C6 12.74 8.18 11 10.9 11H14c2.2 0 4-1.57 4-3.5V5.9C18 3.74 15.82 2 13.1 2h-1.2zM10 5.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" fill="#3b82f6"/>
+      <path d="M12.1 22c2.72 0 4.9-1.74 4.9-3.9V16h-5v-1h7.4c2 0 3.6-1.79 3.6-4s-1.6-4-3.6-4H18v2.1C18 11.26 15.82 13 13.1 13H10c-2.2 0-4 1.57-4 3.5v2.6C6 21.26 8.18 23 10.9 23h1.2zm1.9-3.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" fill="#facc15"/>
+    </svg>
+    PyDocs
+  </a>
+
+  <div class="nav-links">
+    <a href="#" class="active">Documentação</a>
+    <a href="#">Tutoriais</a>
+    <a href="#">Referência</a>
+    <a href="#">Exemplos</a>
+    <a href="#">Blog</a>
+  </div>
+
+  <div class="nav-search" role="search" tabindex="0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <span>Pesquisar docs…</span>
+    <kbd>⌘K</kbd>
+  </div>
+
+  <div class="nav-actions">
+    <a href="#" class="nav-btn">Entrar</a>
+    <a href="#" class="nav-btn primary">Começar grátis</a>
+    <div class="avatar-nav" title="Perfil">IP</div>
+  </div>
+</nav>
+
+<!-- ── HERO ───────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-badge">Documentação Python 3 em Português</div>
+  <h1>Aprenda Python com<br/><span>ajuda inteligente</span> em tempo real</h1>
+  <p>
+    Explore toda a documentação oficial do Python com busca semântica e
+    um assistente de IA que responde suas dúvidas com base no conteúdo real dos docs.
+  </p>
+  <div class="hero-actions">
+    <a href="#" class="btn btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Começar agora
+    </a>
+    <a href="#" class="btn btn-ghost">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Ver demo
+    </a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">4.200+</div>
+      <div class="stat-label">Páginas indexadas</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">98ms</div>
+      <div class="stat-label">Tempo médio de resposta</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">Python 3.12</div>
+      <div class="stat-label">Versão suportada</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Baseado na documentação oficial</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MAIN LAYOUT ─────────────────────────────────────────────────────────── -->
+<div class="layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" aria-label="Navegação de documentação">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Começar</div>
+      <a href="#" class="sidebar-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Início
+      </a>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Introdução
+        <span class="badge new">novo</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Instalação
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Fundamentos</div>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Estruturas de Dados
+        <span class="badge">24</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Funções Built-in
+        <span class="badge">68</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Tratamento de Erros
+      </a>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+        Módulos &amp; Pacotes
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Avançado</div>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Orientação a Objetos
+      </a>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Async / Await
+        <span class="badge new">novo</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+        Type Hints
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Meu progresso</div>
+      <div class="progress-card">
+        <div class="progress-header">
+          <span class="progress-title">Python Básico</span>
+          <span class="progress-pct">68%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:68%"></div>
+        </div>
+        <div class="progress-steps">
+          <div class="step"><div class="step-dot done"></div> Introdução</div>
+          <div class="step"><div class="step-dot done"></div> Estruturas de dados</div>
+          <div class="step"><div class="step-dot active"></div> Funções built-in</div>
+          <div class="step"><div class="step-dot pending"></div> Tratamento de erros</div>
+          <div class="step"><div class="step-dot pending"></div> Módulos</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── CONTENT ── -->
+  <main>
+    <!-- Featured -->
+    <div class="featured-card">
+      <div class="featured-icon">🤖</div>
+      <div class="featured-body">
+        <div class="featured-title">Assistente Python com IA</div>
+        <div class="featured-desc">
+          Tire dúvidas sobre qualquer parte da documentação com nosso chatbot RAG.
+          Ele busca os trechos mais relevantes e gera respostas fundamentadas no conteúdo oficial.
+        </div>
+        <div class="featured-tags">
+          <span class="tag blue">RAG</span>
+          <span class="tag green">Llama 3.3</span>
+          <span class="tag yellow">Embeddings</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Doc cards -->
+    <div class="content-header" style="margin-top:32px;">
+      <h2>Documentação</h2>
+      <div class="filter-bar">
+        <button class="filter-chip active">Todos</button>
+        <button class="filter-chip">Básico</button>
+        <button class="filter-chip">Intermediário</button>
+        <button class="filter-chip">Avançado</button>
+      </div>
+    </div>
+
+    <div class="doc-grid">
+      <a href="#" class="doc-card">
+        <div class="card-icon blue">🐍</div>
+        <div class="card-body">
+          <div class="card-title">Introdução ao Python</div>
+          <div class="card-desc">Conceitos básicos da linguagem: tipos primitivos, variáveis, operadores e primeiros programas.</div>
+        </div>
+        <div class="card-footer">
+          <span class="tag blue">Básico</span>
+          <span class="tag">15 min</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="#" class="doc-card">
+        <div class="card-icon green">📦</div>
+        <div class="card-body">
+          <div class="card-title">Estruturas de Dados</div>
+          <div class="card-desc">Listas, tuplas, dicionários, conjuntos — como usar cada estrutura e quando preferi-las.</div>
+        </div>
+        <div class="card-footer">
+          <span class="tag blue">Básico</span>
+          <span class="tag">20 min</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="#" class="doc-card">
+        <div class="card-icon yellow">⚡</div>
+        <div class="card-body">
+          <div class="card-title">Funções Built-in</div>
+          <div class="card-desc">Referência completa das 68 funções nativas do Python: print, len, map, filter, zip e muito mais.</div>
+        </div>
+        <div class="card-footer">
+          <span class="tag yellow">Intermediário</span>
+          <span class="tag">30 min</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="#" class="doc-card">
+        <div class="card-icon purple">🛡️</div>
+        <div class="card-body">
+          <div class="card-title">Tratamento de Erros</div>
+          <div class="card-desc">Exceções, blocos try/except/finally, criação de erros customizados e boas práticas.</div>
+        </div>
+        <div class="card-footer">
+          <span class="tag yellow">Intermediário</span>
+          <span class="tag">25 min</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="#" class="doc-card">
+        <div class="card-icon blue">🔄</div>
+        <div class="card-body">
+          <div class="card-title">Iteradores e Geradores</div>
+          <div class="card-desc">Como Python itera sobre coleções, protocolo de iteração, yield e expressões geradoras.</div>
+        </div>
+        <div class="card-footer">
+          <span class="tag" style="border-color:rgba(130,80,255,.4);color:#a78bfa;">Avançado</span>
+          <span class="tag">35 min</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="#" class="doc-card">
+        <div class="card-icon green">🔀</div>
+        <div class="card-body">
+          <div class="card-title">Programação Assíncrona</div>
+          <div class="card-desc">asyncio, coroutines, async/await, tasks e como escrever código I/O-bound eficiente.</div>
+        </div>
+        <div class="card-footer">
+          <span class="tag" style="border-color:rgba(130,80,255,.4);color:#a78bfa;">Avançado</span>
+          <span class="tag">40 min</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Recent activity -->
+    <div class="section-title">Acessados recentemente</div>
+    <div class="doc-grid">
+      <a href="#" class="doc-card" style="flex-direction:row; align-items:center; gap:14px;">
+        <div class="card-icon blue" style="width:34px;height:34px;font-size:.9rem;border-radius:8px;">📋</div>
+        <div class="card-body">
+          <div class="card-title" style="font-size:.85rem;">list.sort() vs sorted()</div>
+          <div class="card-desc" style="font-size:.75rem;">Funções Built-in · há 2h</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </a>
+      <a href="#" class="doc-card" style="flex-direction:row; align-items:center; gap:14px;">
+        <div class="card-icon yellow" style="width:34px;height:34px;font-size:.9rem;border-radius:8px;">🔑</div>
+        <div class="card-body">
+          <div class="card-title" style="font-size:.85rem;">dict.get() com valor padrão</div>
+          <div class="card-desc" style="font-size:.75rem;">Estruturas de Dados · há 5h</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </a>
+    </div>
+  </main>
+
+</div><!-- /layout -->
+
+<!-- ── CHAT FAB ───────────────────────────────────────────────────────────── -->
+<div id="chat-fab">
+  <button class="fab-btn" id="fab-toggle" title="Abrir assistente Python" aria-expanded="false" aria-controls="chat-popup">
+    <!-- chat icon (default) -->
+    <svg id="fab-icon-chat" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.524 3.656 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.96 7.96 0 0 1-4.065-1.112l-.29-.174-2.87.854.854-2.87-.174-.29A7.96 7.96 0 0 1 4 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/>
+    </svg>
+    <!-- close icon (when open) -->
+    <svg id="fab-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:none;">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+    <span class="fab-badge">1</span>
+  </button>
+</div>
+
+<!-- ── CHAT POPUP ─────────────────────────────────────────────────────────── -->
+<div id="chat-popup" role="dialog" aria-label="Assistente Python" aria-modal="true">
+
+  <div class="popup-header">
+    <div class="popup-avatar">🐍</div>
+    <div class="popup-meta">
+      <div class="popup-name">PyBot — Assistente Python</div>
+      <div class="popup-status">online</div>
+    </div>
+    <div class="popup-actions">
+      <button class="popup-icon-btn" id="popup-reset" title="Nova conversa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
+      </button>
+      <button class="popup-icon-btn" id="popup-expand" title="Abrir em tela cheia">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+      </button>
+      <button class="popup-icon-btn" id="popup-close" title="Fechar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="popup-messages">
+    <div class="pm-row bot">
+      <div class="pm-avatar bot">🐍</div>
+      <div class="pm-bubble">
+        Olá! Sou o PyBot 👋<br/><br/>
+        Posso responder dúvidas sobre a documentação oficial do Python com base em busca semântica. Experimente perguntar algo!
+      </div>
+    </div>
+  </div>
+
+  <div class="suggestions" id="popup-suggestions">
+    <button class="suggest-chip" data-q="O que são list comprehensions?">List comprehensions</button>
+    <button class="suggest-chip" data-q="Como usar dict.get()?">dict.get()</button>
+    <button class="suggest-chip" data-q="Diferença entre == e is?">== vs is</button>
+    <button class="suggest-chip" data-q="Como tratar exceções em Python?">Try/except</button>
+  </div>
+
+  <div class="popup-input-bar">
+    <textarea id="popup-input" rows="1" placeholder="Pergunte sobre Python…" aria-label="Mensagem para o assistente"></textarea>
+    <button id="popup-send" title="Enviar (Enter)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+    </button>
+  </div>
+
+</div>
+
+<script>
+  const API = "http://localhost:8000";
+
+  /* ── FAB toggle ────────────────────────────────────────────────────────── */
+  const fab      = document.getElementById("fab-toggle");
+  const popup    = document.getElementById("chat-popup");
+  const iconChat = document.getElementById("fab-icon-chat");
+  const iconX    = document.getElementById("fab-icon-close");
+  const badge    = fab.querySelector(".fab-badge");
+
+  function openPopup() {
+    popup.classList.add("open");
+    fab.setAttribute("aria-expanded", "true");
+    iconChat.style.display = "none";
+    iconX.style.display    = "";
+    badge.style.display    = "none";
+    popupInput.focus();
+  }
+
+  function closePopup() {
+    popup.classList.remove("open");
+    fab.setAttribute("aria-expanded", "false");
+    iconChat.style.display = "";
+    iconX.style.display    = "none";
+  }
+
+  fab.addEventListener("click", () => popup.classList.contains("open") ? closePopup() : openPopup());
+  document.getElementById("popup-close").addEventListener("click", closePopup);
+
+  document.getElementById("popup-expand").addEventListener("click", () => {
+    window.open("/", "_blank");
+  });
+
+  /* ── Escape closes popup ────────────────────────────────────────────────── */
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closePopup(); });
+
+  /* ── Messages ────────────────────────────────────────────────────────────── */
+  const messagesEl  = document.getElementById("popup-messages");
+  const popupInput  = document.getElementById("popup-input");
+  const sendBtn     = document.getElementById("popup-send");
+  const suggestEl   = document.getElementById("popup-suggestions");
+
+  function scrollBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
+
+  function addMessage(role, text) {
+    const row = document.createElement("div");
+    row.className = `pm-row ${role}`;
+
+    const avatar = document.createElement("div");
+    avatar.className = `pm-avatar ${role}`;
+    avatar.textContent = role === "user" ? "EU" : "🐍";
+
+    const bubble = document.createElement("div");
+    bubble.className = "pm-bubble";
+    bubble.textContent = text;
+
+    row.appendChild(avatar);
+    row.appendChild(bubble);
+    messagesEl.appendChild(row);
+    scrollBottom();
+    return bubble;
+  }
+
+  function showTyping() {
+    const row = document.createElement("div");
+    row.className = "pm-row bot";
+    row.id = "typing-row";
+    const avatar = document.createElement("div");
+    avatar.className = "pm-avatar bot";
+    avatar.textContent = "🐍";
+    const bubble = document.createElement("div");
+    bubble.className = "pm-bubble typing-bubble";
+    bubble.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
+    row.appendChild(avatar);
+    row.appendChild(bubble);
+    messagesEl.appendChild(row);
+    scrollBottom();
+  }
+
+  function removeTyping() { document.getElementById("typing-row")?.remove(); }
+
+  async function send(text) {
+    if (!text) return;
+    suggestEl.style.display = "none";
+    popupInput.value = "";
+    popupInput.style.height = "36px";
+    sendBtn.disabled = true;
+
+    addMessage("user", text);
+    showTyping();
+
+    try {
+      const res = await fetch(`${API}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }),
+      });
+      const data = await res.json();
+      removeTyping();
+      addMessage("bot", data.answer || data.detail || "Sem resposta.");
+    } catch {
+      removeTyping();
+      addMessage("bot", "⚠️ Servidor offline. Inicie com start.bat e tente novamente.");
+    } finally {
+      sendBtn.disabled = false;
+      popupInput.focus();
+    }
+  }
+
+  sendBtn.addEventListener("click", () => send(popupInput.value.trim()));
+
+  popupInput.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(popupInput.value.trim()); }
+  });
+
+  popupInput.addEventListener("input", () => {
+    popupInput.style.height = "36px";
+    popupInput.style.height = Math.min(popupInput.scrollHeight, 100) + "px";
+  });
+
+  /* ── Suggestion chips ───────────────────────────────────────────────────── */
+  suggestEl.querySelectorAll(".suggest-chip").forEach(chip => {
+    chip.addEventListener("click", () => send(chip.dataset.q));
+  });
+
+  /* ── Reset ──────────────────────────────────────────────────────────────── */
+  document.getElementById("popup-reset").addEventListener("click", async () => {
+    try { await fetch(`${API}/reset`, { method: "POST" }); } catch {}
+    messagesEl.innerHTML = `
+      <div class="pm-row bot">
+        <div class="pm-avatar bot">🐍</div>
+        <div class="pm-bubble">Conversa reiniciada. Como posso ajudar?</div>
+      </div>`;
+    suggestEl.style.display = "";
+  });
+
+  /* ── Filter chips (visual only) ─────────────────────────────────────────── */
+  document.querySelectorAll(".filter-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+    });
+  });
+</script>
+</body>
+</html>
