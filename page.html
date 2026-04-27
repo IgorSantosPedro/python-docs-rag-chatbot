@@ -1199,9 +1199,9 @@
     const online = await checkServer();
     spinner.style.display = "none";
     retryBtn.disabled = false;
-    if (online) overlay.classList.add("hidden");
-    else retryBtn.textContent && (retryBtn.innerHTML = '<span class="srv-spinner" style="display:inline-block;margin-right:6px;" id="srv-spinner"></span>Verificar novamente'.replace('<span', '').split('>')[0] + '>') ;
-    retryBtn.innerHTML = '<span id="srv-spinner" class="srv-spinner" style="display:none;"></span>Verificar novamente';
+    if (online) {
+      overlay.classList.add("hidden");
+    }
   });
 
   initServerCheck();
