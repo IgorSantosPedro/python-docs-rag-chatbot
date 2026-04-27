@@ -44,7 +44,7 @@ while True:
         break
 
 print("\n\nServidor pronto! Abrindo browser...\n")
-webbrowser.open(URL)
+webbrowser.open(PAGE)
 
 # Mantém o terminal aberto e exibe o log do servidor
 try:
