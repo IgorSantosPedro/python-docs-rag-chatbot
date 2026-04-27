@@ -179,6 +179,11 @@ def index():
     return FileResponse(Path(__file__).parent / "index.html")
 
 
+@app.get("/page")
+def page():
+    return FileResponse(Path(__file__).parent / "page.html")
+
+
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
     sources = retrieve(request.message)
